@@ -1,4 +1,4 @@
-import { Layout, Menu } from 'antd'
+import { Avatar, Layout, Menu } from 'antd'
 import type { MenuProps } from 'antd';
 import { NavLink } from 'react-router-dom';
 
@@ -12,10 +12,19 @@ const Header = () => {
       label: <NavLink to={"/"}>Tạo bảng chi tiêu</NavLink>,
       key: "2"
     },
+    {
+      label: <NavLink to={"/huong-dan"}>Hướng dẫn</NavLink>,
+      key: "3"
+    },
   ]
   return (
-    <Layout.Header>
-      <Menu theme="dark" mode="horizontal" defaultSelectedKeys={['2']} items={items} />
+    <Layout.Header style={{ position: 'sticky', top: 0, zIndex: 1, width: '100%' }}>
+      <Menu
+        theme="dark"
+        mode="horizontal"
+        defaultSelectedKeys={['2']}
+        items={items}
+      />
     </Layout.Header>
   )
 }
