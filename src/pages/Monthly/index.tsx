@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
-import { InputNumber, Button, DatePicker, Select, Input, Popconfirm, Form, Space, message } from "antd";
-import { Table } from "ant-table-extensions"
+import { Table, InputNumber, Button, DatePicker, Select, Input, Popconfirm, Form, Space, message } from "antd";
 import { ColumnsType } from "antd/es/table";
 import { MonthlyProps } from "../../models";
 import { options } from '../../constants/Category';
@@ -143,7 +142,7 @@ const Monthly = () => {
         style={{ backgroundColor: "#FFF", padding: "1rem", marginBlock: "1rem", borderRadius: "10px" }}
         onFinish={handleAddExpense}
       >
-        <Space align='start'>
+        <Space align='start' wrap>
           <Form.Item
             rules={[
               {
@@ -208,7 +207,6 @@ const Monthly = () => {
         columns={columns}
         dataSource={dataSource}
         pagination={{ hideOnSinglePage: true, pageSize: 100 }}
-        exportableProps={{ fileName: `chi_tieu_thang_${this_month}_${this_year}`, showColumnPicker: true }}
         footer={() => (
           <Space>
             <Button onClick={handleSaveTemp} type='dashed' danger>Lưu tạm thời</Button>
