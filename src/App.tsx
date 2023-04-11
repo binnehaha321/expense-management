@@ -6,21 +6,20 @@ import NotSupport from "./components/NotSupport";
 
 function App() {
   const { width } = useWindowSize();
-  const isTablet = width && width >= 768;
+  const isMobile = width && width < 768;
+  if (isMobile) return <NotSupport />
 
   return (
-    <>
-      {isTablet ? <Routes>
-        {privateRoutes.map(route => (
-          <Route
-            key={route.path}
-            path={route.path}
-            index={route.index}
-            element={<DefaultLayout><route.element /></DefaultLayout>}
-          />
-        ))}
-      </Routes> : <NotSupport />}
-    </>
+    <Routes>
+      {privateRoutes.map(route => (
+        <Route
+          key={route.path}
+          path={route.path}
+          index={route.index}
+          element={<DefaultLayout><route.element /></DefaultLayout>}
+        />
+      ))}
+    </Routes>
   )
 }
 

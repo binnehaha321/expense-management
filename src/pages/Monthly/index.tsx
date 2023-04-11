@@ -1,13 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useDispatch } from "react-redux";
-import { Table, InputNumber, Button, DatePicker, Select, Input, Popconfirm, Form, Space, message } from "antd";
+import { Table, InputNumber, Button, DatePicker, Select, Input, Popconfirm, Form, Space, message, Tooltip } from "antd";
 import { ColumnsType } from "antd/es/table";
+import { CloudUploadOutlined, DeleteOutlined, PlusOutlined, SaveOutlined } from '@ant-design/icons';
 import { MonthlyProps } from "../../models";
 import { options } from '../../constants/Category';
 import { formatCost, getLocal, parseJSON, removeLocal, saveLocal, stringifyJSON } from '../../utils/functions';
 import UploadData from '../UploadData';
 import { remove, submit } from '../../store/features/expenseSlice';
 import { setModalOpen } from '../../store/features/modalSlice';
+import LinkSpreadsheet from '../../components/partials/LinkSpreadsheet';
 
 const Monthly = () => {
   const this_month = new Date().getMonth()
@@ -118,6 +120,15 @@ const Monthly = () => {
     }
   }, []);
 
+  // auto save after a minute
+  useEffect(() => {
+    let autoSave: any;
+    if (dataSource.length !== 0) {
+      autoSave = setTimeout(handleSaveTemp, 60000)
+    }
+    return () => clearTimeout(autoSave);
+  }, [dataSource])
+
   const warning = () => {
     messageApi?.warning('Chưa có dữ liệu!');
   };
@@ -133,7 +144,9 @@ const Monthly = () => {
   return (
     <div className='container'>
       {contextHolder}
-      <h3>Tháng {this_month}/{this_year}</h3>
+      <h3 style={{ color: "black" }}>
+        Tháng {this_month}/{this_year} ({<LinkSpreadsheet />})
+      </h3>
       <h3 style={{ color: "orange" }}>Tổng chi tiêu: {formatCost(totalExpense)}</h3>
 
       <Form
@@ -196,11 +209,17 @@ const Monthly = () => {
             <Input.TextArea style={{ width: "200px" }} placeholder='Địa điểm, dịp lễ,...' />
           </Form.Item>
         </Space>
-        <Button type='primary' htmlType='submit' style={{ width: "150px", display: "block" }}>Thêm chi tiêu</Button>
+        <Button
+          type='primary'
+          htmlType='submit'
+          style={{ width: "150px", display: "block" }}
+          icon={<PlusOutlined />}
+        >
+          Thêm chi tiêu
+        </Button>
       </Form>
 
       <Table
-        onChange={e => console.log(e)}
         scroll={{
           y: "400px"
         }}
@@ -209,12 +228,35 @@ const Monthly = () => {
         pagination={{ hideOnSinglePage: true, pageSize: 100 }}
         footer={() => (
           <Space>
-            <Button onClick={handleSaveTemp} type='dashed' danger>Lưu tạm thời</Button>
-            <Button onClick={handleDeleteTemp} type='primary' danger>Xóa dữ liệu tạm thời</Button>
+            <Button
+              onClick={handleSaveTemp}
+              type='dashed'
+              danger
+              icon={<SaveOutlined />}
+            >
+              Lưu tạm thời
+            </Button>
+
+            <Popconfirm
+              title="Chắc chắn xóa?"
+              description="Hãy đảm bảo bạn đã lưu dữ liệu trên."
+              onConfirm={handleDeleteTemp}
+            >
+              <Tooltip title="Khuyến cáo: Hãy xóa định kỳ 30 ngày/ lần" placement='right'>
+                <Button
+                  type='primary'
+                  danger
+                  icon={<DeleteOutlined />}
+                >
+                  Xóa dữ liệu tạm thời
+                </Button>
+              </Tooltip>
+            </Popconfirm>
             {dataSource.length !== 0 && (
               <Button
                 onClick={() => dispatch(setModalOpen(true))}
                 type='primary'
+                icon={<CloudUploadOutlined />}
               >
                 Upload lên Google sheet
               </Button>
