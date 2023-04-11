@@ -1,0 +1,12 @@
+import axios from 'axios';
+
+const request = axios.create({
+  baseURL: import.meta.env.VITE_REACT_APP_BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+  },
+});
+
+axios.defaults.headers.common['Content-Type'] = 'application/json';
+
+export default request;
