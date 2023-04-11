@@ -1,6 +1,6 @@
 import { ReactElement } from 'react';
 import { Button, Form, Input } from 'antd'
-import {FormInstance} from "antd/es/form/Form"
+import type { FormInstance } from "antd/es/form/Form"
 
 interface CustomFormProps {
   onFinish?: (e: any) => void,
