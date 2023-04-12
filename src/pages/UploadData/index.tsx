@@ -1,7 +1,6 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { Form, Modal, message } from 'antd';
-import { CloudUploadOutlined } from "@ant-design/icons";
 import { RootState } from '../../store';
 import CustomForm from '../../components/Form';
 import { addNewRows, getDataFromSheet, uploadDataToSpreadsheet } from '../../utils/api';
@@ -22,6 +21,38 @@ const UploadData = (props: UploadDataProps) => {
   const { json_data } = useSelector((state: RootState) => state.expense);
   const [defaultRows] = useState([R1_expenseRows, R2_vi_rows]);
   const dispatch = useDispatch()
+  const [requireKey, setRequireKey] = useState(false);
+  const [accessKey, setAccessKey] = useState("");
+
+  const handleSheetname = useCallback((e: any[]) => {
+    console.log(e);
+    let sheetname = "";
+    if (e[0]?.name[0] === 'tabId') {
+      sheetname = e[0]?.value;
+      // when access to author's sheet
+      if (sheetname === import.meta.env.VITE_AUTHOR_ENV) {
+        setRequireKey(true);
+      } else {
+        setRequireKey(false);
+      }
+    }
+
+    const inputAccessKey = e[0]?.name[0] === 'access-key' && e[0]?.value;
+    setAccessKey(inputAccessKey);
+
+  }, [])
+
+  const handleCheckUpload = () => {
+    if (requireKey) {
+      if (accessKey === import.meta.env.VITE_AUTHOR_KEY) {
+        form.submit();
+      } else {
+        messageApi.error("Mã truy cập không hợp lệ!");
+        return;
+      }
+    }
+    form.submit();
+  }
 
   const handleUploadData = async (values: any) => {
     setLoading(true);
@@ -34,7 +65,9 @@ const UploadData = (props: UploadDataProps) => {
     form.resetFields();
     messageApi.success("Đã upload thành công!")
     setLoading(false);
+    setRequireKey(false);
   }
+
 
   return (
     <>
@@ -43,20 +76,22 @@ const UploadData = (props: UploadDataProps) => {
         open={open}
         title="Tên sheet bạn muốn lưu vào"
         onCancel={onCancel}
-        confirmLoading
+        confirmLoading={loading}
         destroyOnClose
-        footer={null}
+        onOk={handleCheckUpload}
+        okText={"Upload"}
       >
         <CustomForm
-          loading={loading}
           form={form}
+          onFinish={handleUploadData}
+          onFieldsChange={handleSheetname}
           name='tabId'
+          loading={loading}
           required
           requiredMsg='Vui lòng nhập tên sheet!'
           placeholder='Nhập tên sheet'
-          button_title='Upload'
-          icon={<CloudUploadOutlined />}
-          onFinish={handleUploadData}
+          requireKey={requireKey}
+          label='Tên sheet'
         />
       </Modal>
     </>
