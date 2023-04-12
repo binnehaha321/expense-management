@@ -7,6 +7,4 @@ const request = axios.create({
   },
 });
 
-axios.defaults.headers.common['Content-Type'] = 'application/json';
-
 export default request;

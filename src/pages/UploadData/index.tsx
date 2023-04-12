@@ -25,7 +25,6 @@ const UploadData = (props: UploadDataProps) => {
   const [accessKey, setAccessKey] = useState("");
 
   const handleSheetname = useCallback((e: any[]) => {
-    console.log(e);
     let sheetname = "";
     if (e[0]?.name[0] === 'tabId') {
       sheetname = e[0]?.value;
@@ -67,7 +66,6 @@ const UploadData = (props: UploadDataProps) => {
     setLoading(false);
     setRequireKey(false);
   }
-
 
   return (
     <>
