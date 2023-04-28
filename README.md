@@ -21,7 +21,7 @@ Spreadsheet UI to reduce manually excel creating tasks.
 -------------------
 
 ### 3. Tech stack & libs:
-- **Build tool & framework**: Vite + ReactJS + TypeScripts.
+- **Build tool & framework**: Vite + ReactJS + TypeScript.
 - **State management**: Redux Toolkit.
 - **UI**: Ant Design.
 - **API**: Google sheet APIs (from `https://nocodeapi.com/`).
